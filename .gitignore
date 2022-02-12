@@ -1,9 +1,13 @@
 Binaries
+Build
+Content
+Libs
 DerivedDataCache
 Intermediate
 Saved
 .vscode
 .vs
+.idea
 *.VC.db
 *.opensdf
 *.opendb
