@@ -19,6 +19,11 @@
 			"Name": "pugixml",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "lua",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	]
 }
