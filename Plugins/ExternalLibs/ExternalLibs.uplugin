@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "ExternalLibs",
+	"Description": "",
+	"Category": "Library",
+	"CreatedBy": "Naughty Panda",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "pugixml",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
