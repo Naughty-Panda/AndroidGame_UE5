@@ -59,12 +59,52 @@
     <!-- optional additions to the GameActivity class in GameActivity.java -->
     <gameActivityClassAdditions>
         <insert>
+            <![CDATA[
+          // this function will be overrided in C++
+          private static native void onImageSelected(byte[] ImageBytes);
+
+          // open actual gallery on your device
+          public void AndroidThunkJava_OpenGallery() 
+          {
+              Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+              photoPickerIntent.setType("image/*");
+              startActivityForResult(photoPickerIntent, 1);
+          }
+      ]]>
         </insert>
     </gameActivityClassAdditions>
 
     <!-- optional additions to GameActivity onActivityResult in GameActivity.java -->
     <gameActivityOnActivityResultAdditions>
         <insert>
+            <![CDATA[
+      @Override
+      protected void onActivityResult(int reqCode, int resultCode, Intent data)
+      {
+        super.onActivityResult(reqCode, resultCode, data);
+
+        if (resultCode == RESULT_OK)
+        {
+          try
+          {
+            final Uri imageUri = data.getData();
+            final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            selectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+
+            // call overrided method 
+            onImageSelected(byteArray);
+            selectedImage.recycle();
+
+          } catch (FileNotFoundException e) 
+          {
+          }
+        }
+      }
+    ]]>
         </insert>
     </gameActivityOnActivityResultAdditions>
 
