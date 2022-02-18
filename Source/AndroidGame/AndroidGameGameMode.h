@@ -14,6 +14,3 @@ class AAndroidGameGameMode : public AGameModeBase
 public:
 	AAndroidGameGameMode();
 };
-
-
-

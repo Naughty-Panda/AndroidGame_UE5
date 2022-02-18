@@ -3,6 +3,7 @@
 #include "AndroidGameGameMode.h"
 #include "AndroidGameCharacter.h"
 #include "UObject/ConstructorHelpers.h"
+#include "MobileHUD.h"
 
 AAndroidGameGameMode::AAndroidGameGameMode()
 {
@@ -12,4 +13,7 @@ AAndroidGameGameMode::AAndroidGameGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+
+	// set default HUD class to our MobileHUD.cpp
+	HUDClass = AMobileHUD::StaticClass();
 }
