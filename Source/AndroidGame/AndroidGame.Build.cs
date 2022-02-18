@@ -8,9 +8,9 @@ public class AndroidGame : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] {"Core", "CoreUObject", "Engine", "InputCore"});
+		PublicDependencyModuleNames.AddRange(new string[] {"Core", "CoreUObject", "Engine", "InputCore", "ImageWrapper"});
 
 		// Plugins dependencies
-		PublicDependencyModuleNames.AddRange(new string[] {"ExternalLibs"});
+		PublicDependencyModuleNames.AddRange(new string[] {"ExternalLibs", "PhotoLibrary"});
 	}
 }
