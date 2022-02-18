@@ -54,9 +54,16 @@ public class PhotoLibrary : ModuleRules
 		// Plugin setup for Android
 		if (Target.Platform == UnrealTargetPlatform.Android)
 		{
+			/*PublicIncludePaths.AddRange(
+				new string[]
+				{
+					"C:/Program Files/Java/jdk1.8.0_321/include",	// jni.h
+					"C:/Program Files/Java/jdk1.8.0_321/include/win32"	//jni_md.h
+				});*/
+			
 			PrivateDependencyModuleNames.AddRange(new string[] {"Launch", "ApplicationCore"});
 
-			PrivateIncludePaths.AddRange(new string[] {"/Source/Runtime/Launch/Private"});
+			PrivateIncludePaths.AddRange(new string[] { Path.Combine(EngineDirectory, "Source/Runtime/Launch/Private") });
 
 			string pluginPath = Utils.MakePathRelativeTo(ModuleDirectory, Target.RelativeEnginePath);
 			
