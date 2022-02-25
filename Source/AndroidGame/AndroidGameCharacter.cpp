@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AAndroidGameCharacter
@@ -39,11 +40,19 @@ AAndroidGameCharacter::AAndroidGameCharacter()
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	// Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+}
+
+void AAndroidGameCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	DefaultMaterial = GetMesh()->GetMaterial(0);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -70,16 +79,19 @@ void AAndroidGameCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	// handle touch devices
 	PlayerInputComponent->BindTouch(IE_Pressed, this, &AAndroidGameCharacter::TouchStarted);
 	PlayerInputComponent->BindTouch(IE_Released, this, &AAndroidGameCharacter::TouchStopped);
+
+	// Fire action
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AAndroidGameCharacter::Fire);
 }
 
 void AAndroidGameCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
 {
-		Jump();
+	Jump();
 }
 
 void AAndroidGameCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
 {
-		StopJumping();
+	StopJumping();
 }
 
 void AAndroidGameCharacter::TurnAtRate(float Rate)
@@ -110,15 +122,51 @@ void AAndroidGameCharacter::MoveForward(float Value)
 
 void AAndroidGameCharacter::MoveRight(float Value)
 {
-	if ( (Controller != nullptr) && (Value != 0.0f) )
+	if ((Controller != nullptr) && (Value != 0.0f))
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
-	
+
 		// get right vector 
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
+	}
+}
+
+void AAndroidGameCharacter::Fire()
+{
+	const FVector TraceStart = FollowCamera->GetComponentLocation();
+	const FVector ForwardVector = FollowCamera->GetForwardVector();
+	constexpr float TraceDistance = 2000.f;
+	const FVector TraceEnd = TraceStart + ForwardVector * TraceDistance;
+
+	FHitResult HitResult;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+	CollisionParams.TraceTag = FName(TEXT("FireTrace"));
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Camera, CollisionParams))
+	{
+		GEngine->AddOnScreenDebugMessage(0, 1.f, FColor::Blue, TEXT("Tracing..."));
+		GetWorld()->DebugDrawTraceTag = CollisionParams.TraceTag;
+
+		if (auto* HitCharacter = Cast<AAndroidGameCharacter>(HitResult.GetActor()))
+		{
+			if (HitCharacter->DefaultMaterial)
+			{
+				if (UMaterialInstanceDynamic* DynamicMaterialInstance = UMaterialInstanceDynamic::Create(HitCharacter->DefaultMaterial, this))
+				{
+					const float R = FMath::FRandRange(0.f, 1.f);
+					const float G = FMath::FRandRange(0.f, 1.f);
+					const float B = FMath::FRandRange(0.f, 1.f);
+					const FLinearColor RandomColor = FLinearColor(R, G, B);
+
+					DynamicMaterialInstance->SetVectorParameterValue(FName(TEXT("BodyColor")), RandomColor);
+					HitCharacter->GetMesh()->SetMaterial(0, DynamicMaterialInstance);
+				}
+			}
+		}
 	}
 }

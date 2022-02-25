@@ -11,6 +11,6 @@ public class AndroidGame : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] {"Core", "CoreUObject", "Engine", "InputCore", "ImageWrapper"});
 
 		// Plugins dependencies
-		PublicDependencyModuleNames.AddRange(new string[] {"ExternalLibs", "PhotoLibrary"});
+		PublicDependencyModuleNames.AddRange(new string[] {"PhotoLibrary"});
 	}
 }

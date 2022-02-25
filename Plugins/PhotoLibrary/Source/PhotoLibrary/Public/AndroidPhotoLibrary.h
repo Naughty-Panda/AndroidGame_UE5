@@ -5,9 +5,7 @@
 #include "PhotoLibrary.h"
 #include "Delegates/Delegate.h"
 
-//DECLARE_DYNAMIC_DELEGATE_OneParam(FOnImageSelectedFromGallery, TArray<uint8>, ImageBytes);
 DECLARE_DELEGATE_OneParam(FOnImageSelectedFromGallery, TArray<uint8>& ImageBytes);
-
 
 class PHOTOLIBRARY_API AndroidPhotoLibrary : public IPhotoLibrary
 {
@@ -31,7 +29,7 @@ public:
 	DECLARE_JAVA_METHOD(AndroidThunkJava_OpenGallery);
 #endif
 	
-public:	
+public:
 	// OnImageSelected callback
 	static FOnImageSelectedFromGallery ImageSelectedFromGalleryProxy;
 
