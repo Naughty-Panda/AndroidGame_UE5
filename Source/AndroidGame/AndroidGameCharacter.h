@@ -18,8 +18,10 @@ class AAndroidGameCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+
 public:
 	AAndroidGameCharacter();
+	virtual void BeginPlay() override;
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
@@ -29,8 +31,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
-protected:
+	/** Default skeletal mesh material */
+	UPROPERTY()
+	UMaterialInterface* DefaultMaterial = nullptr;
 
+protected:
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 
@@ -55,6 +60,9 @@ protected:
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
+	/** Fire action */
+	void Fire();
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -66,4 +74,3 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 };
-
